@@ -9,3 +9,6 @@ RUN chmod +x /scripts/nginx.sh
 RUN chmod +x /scripts/python.sh
 
 CMD ["./run.sh"]
+
+# HOST : CONTAINER
+EXPOSE 7001:7001
