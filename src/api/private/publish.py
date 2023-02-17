@@ -1,9 +1,15 @@
-from flask import app, Blueprint
+from flask import request, Response
 from . import private_blueprint
 
 # Path: src/api/private/publish.py
-@private_blueprint.route('/publish', methods=['POST'])
+@private_blueprint.route(
+    '/publish', 
+    methods=['POST', 'GET']
+)
 def publish():
-    print('Publishing...')
+    print(request)
+
     # ...
-    return 'OK'
+    return Response(
+        status=200
+    )

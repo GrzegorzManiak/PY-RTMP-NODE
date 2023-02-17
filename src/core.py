@@ -5,7 +5,6 @@ import os
 from nginx import kill_all_nginx, start_nginx, check_config
 from api import start_api
 
-
 # -- Start Nginx
 if kill_all_nginx() == False:
     print("Failed to kill all nginx processes")

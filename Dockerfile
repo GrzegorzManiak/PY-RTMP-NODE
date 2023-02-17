@@ -11,4 +11,9 @@ RUN chmod +x /scripts/python.sh
 CMD ["./run.sh"]
 
 # HOST : CONTAINER
-EXPOSE 7001:7001
+
+# -- API
+EXPOSE 80:80
+
+# -- NGINX RTMP
+EXPOSE 1935:1935 
