@@ -15,7 +15,7 @@ if start_nginx() == False:
     exit(1)
 
 
-print("Nginx started successfully")
+print(f'Nginx started successfully: {os.getenv("NGINX_HTTP_API")}');
 
 
 # -- Start the API
