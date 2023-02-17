@@ -1,8 +1,9 @@
+import threading
 import time
 import os
+
 from nginx import kill_all_nginx, start_nginx, check_config
-
-
+from api import start_api
 
 
 # -- Start Nginx
@@ -14,7 +15,13 @@ if start_nginx() == False:
     print("Failed to start nginx")
     exit(1)
 
+
 print("Nginx started successfully")
+
+
+# -- Start the API
+start_api()
+print("API started successfully")
 
 
 # -- Keep the script running
@@ -34,4 +41,4 @@ while True:
         
 
     # -- Sleep for x seconds
-    time.sleep(5)
+    time.sleep(2)
