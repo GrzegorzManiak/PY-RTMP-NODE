@@ -14,7 +14,6 @@ Theres a few parts to this project, but the main parts are:
 - Master: This is the server that sits in the middle of the mesh, it is responsible for directing
           the streams to the correct nodes, load balancing the streams, keeping track of the
           nodes, keeping track of the streams, authentication of broadcasters, viewers and nodes.
-
           In general, this is the brains of the operation, I will open source this in the future,
           as I am still working on it.
 
