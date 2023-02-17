@@ -18,14 +18,10 @@ Theres a few parts to this project, but the main parts are:
           as I am still working on it.
 
 ### Terminology
-- Node: A node is a server that is running the RTMP Node software, it can be a root node, edge
-        node, root relay node or relay node.
-- Root Relay Node: A node that can take in a stream from the Ingest node, and relay it to other nodes,
-                   This not can NOT output a stream to the end user, only to other nodes.
-- Relay Node: A node that can take in a stream from a Root Relay Node, and relay it to other nodes or
-              the end user, this is the only node capable of transcoding the stream.
-- Ingest Node: A node that can take in a stream from a broadcaster, and ONLY relay it to Root Level
-               Relay Nodes.
+- Node: A node is a server that is running the RTMP Node software, it can be a root node, root relay node or relay node.
+- Root Relay Node: A node that can take in a stream from the Ingest node, and relay it to other nodes, This not can NOT output a stream to the end user, only to other nodes, it can also ingest a stream from other root relay nodes, this is where most of the load balancing will happen.
+- Relay Node: A node that can take in a stream from a Root Relay Node, and relay it to other nodes or the end user, this is the only node capable of transcoding the stream.
+- Ingest Node: A node that can take in a stream from a broadcaster, and ONLY relay it to Root Level Relay Nodes.
 
 
 ### Relaying
@@ -58,10 +54,9 @@ node or just a randomer.
 
 #### User relaying (Only for Normal Relay Nodes)
 If the node is a normal relay node, it will also relay the stream to the end user, this is done
-by the NGINX-RTMP server, it will take the stream and relay it to the end user, with the user
-of FFMPEG DASH and HLS transcoding.
+by the NGINX-RTMP server, it will take the stream and relay it to the end user.
 
-When a user connects to the node, it will check its incoming streams to check if a stream is 
+When a user connects to the node, it will check its incoming streams to check if the stream is 
 being broadcasted to this node, if it is, it will begin the process of transcoding the stream
 and relaying it to the user (If it has not already started transcoding the stream for other
 users).
@@ -106,6 +101,7 @@ HEARTBEAT_ENDPOINT = /heartbeat
 ANNOUNCE_ENDPOINT = /announce
 STREAMS_ENDPOINT = /streams
 AUTH_ENDPOINT = /auth
+ROUTE_ENDPOINT = /route
 
 # SECURITY
 MASTER_KEY = 1234567890-SUPER-STRONG-KEY
