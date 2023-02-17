@@ -1,19 +1,9 @@
 import time
-from dotenv.main import load_dotenv
 import os
+from nginx import kill_all_nginx, start_nginx, check_config
 
-from nginx import kill_all_nginx, start_nginx, reload_nginx
 
-load_dotenv('../.env')
 
-nginx_conf = os.path.abspath(os.getenv("NGINX_CONF"))
-def read_conf() -> str:
-    text = ""
-    with open(nginx_conf, 'r') as f:
-        text = f.read()
-        f.close()
-    return text
-conf = read_conf()
 
 # -- Start Nginx
 if kill_all_nginx() == False:
@@ -39,16 +29,9 @@ while True:
 
 
     # -- Check if the config file has changed
-    if read_conf() != conf:
-        print("Config file has changed, reloading...")
-        conf = read_conf()
-
-        if reload_nginx() == False:
-            print("Failed to reload nginx")
-            exit(1)
-            
-        print("Nginx reloaded successfully")
-    
+    if check_config() == False:
+        print("Config file has changed, reloading nginx...")
+        
 
     # -- Sleep for x seconds
     time.sleep(5)
