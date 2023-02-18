@@ -1,4 +1,5 @@
 from dotenv.main import load_dotenv
+from logger import log
 import socket
 import os
 
@@ -31,3 +32,6 @@ NGINX_HTTP_API = os.getenv("CORE_URL"
 # -- Set the env 'CORE_API' to the API URL
 os.environ['CORE_API'] = CORE_API
 os.environ['NGINX_HTTP_API'] = NGINX_HTTP_API
+
+
+log('ENV', 'Environment variables loaded successfully')
