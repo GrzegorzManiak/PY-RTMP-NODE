@@ -35,15 +35,13 @@ def publish():
         stream_data['call'] != 'publish'
     ):
         log('PUBLISH', 'Invalid publish request', 'error')
-        # 302: For some reason, this is what nginx-rtmp
-        #      expects to be returned when the stream
-        #      is invalid
-        return Response(status=302)
+        return Response(status=400)
 
     # -- Make sure the secret is valid
     if not ensure_valid_secret(stream_data['name']):
         log('PUBLISH', 'Invalid secret', 'error')
-        return Response(status=302)
+        return Response(status=400)
+
 
     # 
     # TODO: Authenticate the stream, this stuff
@@ -63,6 +61,4 @@ def publish():
 
     # -- Allow the stream to be published
     log('PUBLISH', f'Publishing stream {connection}')
-    return Response(
-        status=200
-    )
+    return Response(status=200)

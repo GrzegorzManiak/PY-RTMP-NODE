@@ -33,5 +33,11 @@ NGINX_HTTP_API = os.getenv("CORE_URL"
 os.environ['CORE_API'] = CORE_API
 os.environ['NGINX_HTTP_API'] = NGINX_HTTP_API
 
+# -- Local
+local = os.getenv("LOCAL_ONLY").lower() == 'true'
+if local: os.environ['LOCAL_ONLY'] = 'deny all;'
+else: os.environ['LOCAL_ONLY'] = ''
+
+
 
 log('ENV', 'Environment variables loaded successfully')
