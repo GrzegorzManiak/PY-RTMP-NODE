@@ -5,7 +5,7 @@ import os
 from nginx import kill_all_nginx, start_nginx, check_config
 from api import start_api
 from logger import log
-from stats import stats_refresh_thread
+from stats import stats_refresh_thread, force_refresh_callbacks
 
 
 # -- Threading
@@ -51,4 +51,5 @@ while True:
     check_config();
 
     # -- Sleep for x seconds
-    time.sleep(2)
+    time.sleep(5)
+    

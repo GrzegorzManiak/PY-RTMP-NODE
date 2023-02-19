@@ -125,14 +125,40 @@ def get_nginx_stats() -> dict:
 """
 statistics_thread = None
 statistics_cache = None
+force_refresh_callbacks = []
+
 def stats_refresh_thread(threads: list, seconds: int):    
     # -- This is what will be run in the thread
     def func():
         global statistics_cache
+        global force_refresh
+        last_refresh = time.time() * 1000 # -- In milliseconds
 
+        # So, we don't really want to refresh every x seconds
+        # because we might need to get the stats right away
+        # so basically, instead of sleeping, we just wait for
+        # a signal to refresh the stats, or just to wait out
+        # the time until the next refresh
         while True:
-            statistics_cache = get_nginx_stats()
-            time.sleep(seconds)
+            if (
+                len(force_refresh_callbacks) > 0 or 
+                (time.time() * 1000) - last_refresh >= seconds * 1000
+            ):
+                statistics_cache = get_nginx_stats()
+                last_refresh = time.time() * 1000
+                force_refresh = False
+
+            if len(force_refresh_callbacks) > 0:
+                log('NGINX', 'Forced to refresh the statistics', 'DEBUG')
+            
+                for callback in force_refresh_callbacks:
+                    # -- Execute the callback
+                    callback()
+
+                    # -- Get rid of the callback
+                    force_refresh_callbacks.remove(callback)
+
+                
 
     # -- Create the thread
     global statistics_thread
