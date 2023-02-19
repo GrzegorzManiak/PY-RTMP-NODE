@@ -69,3 +69,17 @@ class Connection:
         :desc: Get the info for the connection from
                nginx-rtmp, eg bitrate, etc.
     """
+
+
+    """
+        Flow controll section:
+
+        Drop publisher:
+            ConnectionType.PUBLISH
+            http://localhost:nginx_port/control/drop/publisher?app={appname}&name={secret}
+
+        Drop player:
+            ConnectionType.PLAY
+            http://localhost:nginx_port/control/drop/client?app={appname}&name={secret}
+
+    """

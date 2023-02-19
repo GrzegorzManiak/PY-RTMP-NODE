@@ -7,3 +7,4 @@ public_blueprint = Blueprint(
 )
 
 # -- Import all the routes
+from . statistics import statistic

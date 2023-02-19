@@ -1,5 +1,5 @@
 from flask import request, Response
-from lib import destructure_multi_dict
+from lib import destructure_multi_dict, ensure_valid_secret
 from logger import log
 from connection import Connection, ConnectionType
 from . import private_blueprint
@@ -38,6 +38,11 @@ def publish():
         # 302: For some reason, this is what nginx-rtmp
         #      expects to be returned when the stream
         #      is invalid
+        return Response(status=302)
+
+    # -- Make sure the secret is valid
+    if not ensure_valid_secret(stream_data['name']):
+        log('PUBLISH', 'Invalid secret', 'error')
         return Response(status=302)
 
     # 

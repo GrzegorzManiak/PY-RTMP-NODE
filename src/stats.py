@@ -124,14 +124,22 @@ def get_nginx_stats() -> dict:
     :return: None
 """
 statistics_thread = None
-statistics_cache = None
+statistics_cache = {}
 force_refresh_callbacks = []
 
+def get_cache() -> dict:
+    global statistics_cache
+    return statistics_cache
+
+def set_cache(new_cache: dict):
+    global statistics_cache
+    statistics_cache = new_cache
+
 def stats_refresh_thread(threads: list, seconds: int):    
+
+
     # -- This is what will be run in the thread
     def func():
-        global statistics_cache
-        global force_refresh
         last_refresh = time.time() * 1000 # -- In milliseconds
 
         # So, we don't really want to refresh every x seconds
@@ -144,13 +152,12 @@ def stats_refresh_thread(threads: list, seconds: int):
                 len(force_refresh_callbacks) > 0 or 
                 (time.time() * 1000) - last_refresh >= seconds * 1000
             ):
-                statistics_cache = get_nginx_stats()
+                set_cache(get_nginx_stats())
                 last_refresh = time.time() * 1000
-                force_refresh = False
 
             if len(force_refresh_callbacks) > 0:
                 log('NGINX', 'Forced to refresh the statistics', 'DEBUG')
-            
+
                 for callback in force_refresh_callbacks:
                     # -- Execute the callback
                     callback()
