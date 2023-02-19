@@ -7,7 +7,7 @@ load_dotenv('../.env')
 NGINX_BIN = os.path.abspath(os.getenv("NGINX_BIN"))
 NGINX_CONF = os.path.abspath(os.getenv("NGINX_CONF"))
 NGINX_CONF_PARSED = os.path.abspath(os.getenv("NGINX_CONF_PARSED"))
-
+NGINX_HTTP_PORT = int(os.getenv("NGINX_HTTP_PORT"))
 
 # -- CORE_HOST
 if os.getenv("CORE_HOST") == None:
