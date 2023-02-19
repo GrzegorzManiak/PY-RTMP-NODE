@@ -69,7 +69,7 @@ def log(
     level = LogLevel.figure(level)
     
     f_time = f'{GREY}[{int(time.time() * 1000)}]{WHITE}'
-    tag = f'{level.color()}[{header}]{WHITE}'
+    tag = f'{level.color()}{str(level).ljust(8)} {str(header).ljust(8)}{WHITE}'
     print(f'{f_time} {tag} {message}')
 
     # -- IF Its a critical error, exit the script

@@ -5,6 +5,7 @@ import os
 from nginx import kill_all_nginx, start_nginx, check_config
 from api import start_api
 from logger import log
+from stats import get_nginx_stats
 
 
 # -- Threading
@@ -51,3 +52,6 @@ while True:
 
     # -- Sleep for x seconds
     time.sleep(2)
+
+    statistics = get_nginx_stats()
+    print(statistics)
