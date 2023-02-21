@@ -29,6 +29,13 @@ NGINX_HTTP_API = os.getenv("CORE_URL"
     '$CORE_PORT', os.getenv("NGINX_HTTP_PORT")
 )
 
+NGINX_RTMP_API = os.getenv("CORE_URL"
+).replace(
+    '$CORE_HOST', os.getenv("CORE_HOST")
+).replace(
+    '$CORE_PORT', os.getenv("NGINX_RTMP_PORT")
+)
+
 # -- Set the env 'CORE_API' to the API URL
 os.environ['CORE_API'] = CORE_API
 os.environ['NGINX_HTTP_API'] = NGINX_HTTP_API

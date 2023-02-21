@@ -27,7 +27,7 @@ def announce() -> list[bool, dict]:
     # -- Construct the data
     data = {
         'rtmp_ip': external_ip,
-        'rtmp_port': os.environ['NGINX_RMTMP_PORT'],
+        'rtmp_port': os.environ['NGINX_RTMP_PORT'],
         'http_ip': external_ip,
         'http_port': os.environ['NGINX_HTTP_PORT'],
     }

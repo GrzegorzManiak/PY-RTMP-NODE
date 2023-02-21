@@ -5,6 +5,7 @@ from logger import log
 from env import (
     NGINX_BIN, 
     NGINX_CONF,
+    NGINX_RTMP_API,
     NGINX_CONF_PARSED
 )
 
@@ -92,6 +93,7 @@ def start_nginx() -> bool:
             shell=True,
         )
         log('NGINX', f'Nginx started successfully: {os.getenv("NGINX_HTTP_API")}')
+        log('NGINX', f'Nginx-RTMP started successfully: {NGINX_RTMP_API}')
         return True
 
     except: 

@@ -25,8 +25,14 @@ server_id = None
 server_secret = None
 server_mode = None
 server_name = None
+server_slug = None
 
 while True:
+    # -- Check if were in test mode 'TEST_MODE'
+    if os.environ['TEST_MODE'].lower() == 'true':
+        log('CORE', 'Running in test mode, skipping server authentication', 'DEBUG')
+        break
+    
     announcement = announce.announce()
 
     if announcement[0] == False:
@@ -38,9 +44,10 @@ while True:
         server_secret = announcement[1]['secret']
         server_mode = announcement[1]['mode']
         server_name = announcement[1]['name']
+        server_slug = announcement[1]['slug']
 
         log('CORE', 'Announced to master server successfully', 'DEBUG')
-        log('CORE', f'We are Node: "{server_id}", Named: "{server_name}", runing in: "{server_mode}" mode', 'info')
+        log(server_slug, f'We are Node: "{server_id}", Named: "{server_name}", runing in: "{server_mode}" mode', 'info')
         break
 
 
