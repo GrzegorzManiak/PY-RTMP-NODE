@@ -1,4 +1,5 @@
 import signal
+import uuid
 import time
 import os
 
@@ -18,6 +19,19 @@ start_nginx()
 start_api(threads)
 stats_refresh_thread(threads, 1)
 
+# -- Check if we have a .id file
+if os.path.isfile('.id'):
+    with open('.id', 'r') as f:
+        os.environ['SERVER_ID'] = f.read()
+        f.close()
+
+else:
+    with open('.id', 'w') as f:
+        os.environ['SERVER_ID'] = str(uuid.uuid4())
+        f.write(os.environ['SERVER_ID'])
+        f.close()
+        
+
 
 # -- Start the Server authentication and 
 #    Heartbeat processess
@@ -32,7 +46,7 @@ while True:
     if os.environ['TEST_MODE'].lower() == 'true':
         log('CORE', 'Running in test mode, skipping server authentication', 'DEBUG')
         break
-    
+
     announcement = announce.announce()
 
     if announcement[0] == False:

@@ -30,6 +30,7 @@ def announce() -> list[bool, dict]:
         'rtmp_port': os.environ['NGINX_RTMP_PORT'],
         'http_ip': external_ip,
         'http_port': os.environ['NGINX_HTTP_PORT'],
+        'server_uuid': os.environ['SERVER_ID'],
     }
 
     headers = {
