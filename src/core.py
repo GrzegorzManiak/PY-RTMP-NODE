@@ -5,8 +5,8 @@ import os
 from nginx import kill_all_nginx, start_nginx, check_config
 from api import start_api
 from logger import log
-from stats import stats_refresh_thread, force_refresh_callbacks
-
+from stats import stats_refresh_thread
+from master import announce
 
 # -- Threading
 global threads
@@ -17,6 +17,33 @@ threads = []
 start_nginx()
 start_api(threads)
 stats_refresh_thread(threads, 1)
+
+
+# -- Start the Server authentication and 
+#    Heartbeat processess
+server_id = None
+server_secret = None
+server_mode = None
+server_name = None
+
+while True:
+    announcement = announce.announce()
+
+    if announcement[0] == False:
+        log('CORE', 'Failed to announce to master server, retrying...', 'ERROR')
+        time.sleep(int(os.environ['ANNOUNCE_RETRY_TIME']))
+
+    else:
+        server_id = announcement[1]['id']
+        server_secret = announcement[1]['secret']
+        server_mode = announcement[1]['mode']
+        server_name = announcement[1]['name']
+
+        log('CORE', 'Announced to master server successfully', 'DEBUG')
+        log('CORE', f'We are Node: "{server_id}", Named: "{server_name}", runing in: "{server_mode}" mode', 'info')
+        break
+
+
 
 # -- Start the exit listener
 def exit_listener(signum, frame):
