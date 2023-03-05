@@ -49,3 +49,45 @@ def authenticated():
         return wrapper
     
     return decorator
+
+
+
+"""
+    :name: truncate
+    :description: Truncate a text to a lenght of lines
+    :param text: The file to truncate
+    :param start: The start of the file to truncate
+    :param end: The end of the file to truncate (optional)
+"""
+def truncate(text: str, start: int, end: int = None):
+    # -- Get the lines
+    lines = text.splitlines()
+
+    if start and start.isdigit():
+        lines = lines[int(start):]
+
+    if end and end.isdigit():
+        lines = lines[:int(end)]
+
+    # -- Return the lines
+    return lines
+
+
+
+"""
+    :name: filter_logs
+    :description: Filter the logs by the header
+    :param logs: The logs to filter
+    :param logger: The logger to filter by
+    :return: The filtered logs
+"""
+def filter_logs(logs: list, logger: str) -> list:
+    # EG: 2023-03-05 20:45:16,196 - urllib3.connectionpool - DEBUG - Starting new HTTP connection (1): 127.0.0.1:2042
+    # Timestamp, logger, level, message
+
+    if not logger: return logs
+    if logger.lower() != 'root':
+        return [log for log in logs if log.split(' - ')[1].lower() == logger.lower()]
+    
+    return [log.split('>?')[1] for log in logs if log.split(' - ')[1].lower() == 'root']
+

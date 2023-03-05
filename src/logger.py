@@ -96,15 +96,12 @@ def log(
     
     f_time = f'{GREY}[{int(time.time() * 1000)}]{WHITE}'
     tag = f'{level.color()}{str(level).ljust(8)} {str(header).ljust(8)}{WHITE}'
-    print(f'{f_time} {tag} {message}')
+    msg = f'{f_time} {tag} {message}'
 
-    # -- Write to the log file, we cant use
-    #    any of the stylized text here
-    logging.log(
-        level=level.numeric(),
-        msg=f'{str(level).ljust(8)} {str(header).ljust(8)} {message}'
-    )
+    # -- Write to the log file
+    logging.log(level=level.numeric(),
+        msg=f'>?[{int(time.time() * 1000)}] {str(level).ljust(8)} {str(header).ljust(8)} {message}')
+    print(msg)
 
     # -- IF Its a critical error, exit the script
-    if level == LogLevel.CRITICAL:
-        exit(1)
+    if level == LogLevel.CRITICAL: exit(1)

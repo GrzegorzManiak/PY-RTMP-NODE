@@ -8,3 +8,4 @@ public_blueprint = Blueprint(
 
 # -- Import all the routes
 from . statistics import statistic
+from . logs import logs, log, logs_latest
