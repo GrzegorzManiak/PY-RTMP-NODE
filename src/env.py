@@ -9,6 +9,8 @@ NGINX_CONF = os.path.abspath(os.getenv("NGINX_CONF"))
 NGINX_CONF_PARSED = os.path.abspath(os.getenv("NGINX_CONF_PARSED"))
 NGINX_HTTP_PORT = int(os.getenv("NGINX_HTTP_PORT"))
 
+SECRET = os.getenv("MASTER_KEY")
+
 # -- CORE_HOST
 if os.getenv("CORE_HOST") == None:
     os.environ['CORE_HOST'] = socket.gethostbyname(socket.gethostname())
@@ -45,6 +47,8 @@ local = os.getenv("LOCAL_ONLY").lower() == 'true'
 if local: os.environ['LOCAL_ONLY'] = 'deny all;'
 else: os.environ['LOCAL_ONLY'] = ''
 
+# -- Add 'logs' folder as static folder, logs is in the root of the project
+LOG_FOLDER = os.path.abspath('./logs')
 
-
+log('OS', f'Log Folder: {LOG_FOLDER}')
 log('ENV', 'Environment variables loaded successfully')
