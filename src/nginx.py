@@ -45,10 +45,10 @@ def parse_nginx_conf() -> bool:
         log('NGINX', 'Parsed nginx config file successfully')
         return True
 
-    except: 
-        log('NGINX', 'Failed to parse nginx config file', 'error')
+    # Log error message and return false
+    except Exception as e:
+        log('NGINX', f'Failed to parse nginx config file: {e}', 'error')
         return False
-
 
 
 
