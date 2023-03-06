@@ -4,7 +4,6 @@ import os
 
 from flask import Flask
 from logger import log
-from flask_cors import CORS
 
 # -- Blueprints
 from .private import private_blueprint
@@ -25,10 +24,6 @@ def start_api(threads: list):
 
     # -- Start the API on a different thread
     log('API', f'Starting API on {os.getenv("CORE_HOST")}:{os.getenv("CORE_PORT")}', 'DEBUG')
-
-    # -- Allow CORS
-    CORS(app, resources={r'/*': {'origins': '*'}})
-
 
     thread = threading.Thread(
         target = lambda: app.run(
