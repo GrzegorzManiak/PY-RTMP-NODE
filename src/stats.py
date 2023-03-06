@@ -92,10 +92,15 @@ import time
 import requests
 import xmltodict
 import threading
+import psutil
 
 from logger import log
 from env import NGINX_HTTP_PORT
 
+
+kb = float(1024)
+mb = float(kb ** 2)
+gb = float(kb ** 3)
 
 """
     :name: get_nginx_stats
@@ -126,6 +131,46 @@ def get_nginx_stats() -> dict:
 statistics_thread = None
 statistics_cache = {}
 force_refresh_callbacks = []
+server_statistics_cache = {
+    'datasets': [
+        { 'name': 'CPU%', 'type': 'line', 'data': [] },
+        { 'name': 'RAM%', 'type': 'line', 'data': [] },
+        { 'name': 'I/O mb/s', 'type': 'line', 'data': [] },
+        { 'name': 'NET mb/s', 'type': 'line', 'data': [] }
+    ],
+    'labels': []
+}
+
+def push_stats():
+    global server_statistics_cache  
+
+    mem_total = int(psutil.virtual_memory()[0]/gb)
+    mem_used = int(psutil.virtual_memory()[3]/gb)
+    mem_percent = int(mem_used/mem_total*100)
+
+    cpu = server_statistics_cache['datasets'][0]['data']
+    ram = server_statistics_cache['datasets'][1]['data']
+    io = server_statistics_cache['datasets'][2]['data']
+    net = server_statistics_cache['datasets'][3]['data']
+
+    cpu.append(psutil.cpu_percent())
+    ram.append(mem_percent)
+    io.append(psutil.disk_io_counters()[2]/mb)
+    net.append(psutil.net_io_counters()[0]/mb)
+
+    # -- Trim the data
+    MAX_ENTRIES = 10
+
+    server_statistics_cache['datasets'][0]['data'] = cpu[-MAX_ENTRIES:]
+    server_statistics_cache['datasets'][1]['data'] = ram[-MAX_ENTRIES:]
+    server_statistics_cache['datasets'][2]['data'] = io[-MAX_ENTRIES:]
+    server_statistics_cache['datasets'][3]['data'] = net[-MAX_ENTRIES:]
+
+    # -- mm:ss
+    lable = time.strftime('%H:%M:%S', time.gmtime(time.time()))
+    server_statistics_cache['labels'].append(lable)
+    server_statistics_cache['labels'] = server_statistics_cache['labels'][-MAX_ENTRIES:]
+
 
 def get_cache() -> dict:
     global statistics_cache
@@ -153,6 +198,7 @@ def stats_refresh_thread(threads: list, seconds: int):
                 (time.time() * 1000) - last_refresh >= seconds * 1000
             ):
                 set_cache(get_nginx_stats())
+                push_stats()
                 last_refresh = time.time() * 1000
 
             if len(force_refresh_callbacks) > 0:
