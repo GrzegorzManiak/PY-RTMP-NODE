@@ -10,6 +10,7 @@ NGINX_CONF_PARSED = os.path.abspath(os.getenv("NGINX_CONF_PARSED"))
 NGINX_HTTP_PORT = int(os.getenv("NGINX_HTTP_PORT"))
 
 SECRET = os.getenv("MASTER_KEY")
+HTTPS = os.getenv("HTTPS").lower() == 'true'
 
 # -- CORE_HOST
 if os.getenv("CORE_HOST") == None:

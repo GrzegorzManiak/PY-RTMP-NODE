@@ -1,3 +1,4 @@
 python-dotenv
 xmltodict
 flask
+flask_cors

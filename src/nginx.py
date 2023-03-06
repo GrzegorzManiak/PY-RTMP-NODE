@@ -19,6 +19,12 @@ from env import (
 """
 def parse_nginx_conf() -> bool:
     try: 
+        # -- Get the two certs and copy them into
+        #    /temp/streamstage/
+        os.system('mkdir -p /tmp/streamstage')
+        os.system('cp ../cert.crt /tmp/streamstage/cert.crt')
+        os.system('cp ../cert.key /tmp/streamstage/cert.key')
+
         log('NGINX', 'Parsing nginx config file', 'warning')
         # -- Variables are in the format of $VAR_NAME
         #    So we need to add the $ to the env variables

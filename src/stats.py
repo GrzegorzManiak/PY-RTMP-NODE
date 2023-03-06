@@ -93,6 +93,7 @@ import requests
 import xmltodict
 import threading
 import psutil
+import warnings
 
 from logger import log
 from env import NGINX_HTTP_PORT
@@ -110,12 +111,13 @@ gb = float(kb ** 3)
 """
 def get_nginx_stats() -> dict:
     try:
-        r = requests.get(f"http://127.0.0.1:{NGINX_HTTP_PORT}/statistics")
+        warnings.filterwarnings('ignore', message='Unverified HTTPS request')
+        r = requests.get(f"https://127.0.0.1:{NGINX_HTTP_PORT}/statistics", verify=False)
         if r.status_code == 200:
             try: return xmltodict.parse(r.text)
-            except: log('NGINX', 'Failed to parse nginx statistics', 'error')
-        else: log('NGINX', 'Failed to get nginx statistics', 'error')
-    except: log('NGINX', 'Failed to get nginx statistics', 'error')
+            except: log('NGINX', 'Failed to parse nginx statistics E1', 'error')
+        else: log('NGINX', 'Failed to get nginx statistics E2', 'error')
+    except Exception as e: log('NGINX', f'Failed to get nginx statistics E3: {e}', 'error')
     
     return None
 
