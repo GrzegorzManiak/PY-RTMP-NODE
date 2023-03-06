@@ -135,13 +135,39 @@ statistics_cache = {}
 force_refresh_callbacks = []
 server_statistics_cache = {
     'datasets': [
-        { 'name': 'CPU%', 'type': 'line', 'data': [] },
-        { 'name': 'RAM%', 'type': 'line', 'data': [] },
-        { 'name': 'I/O mb/s', 'type': 'line', 'data': [] },
-        { 'name': 'NET mb/s', 'type': 'line', 'data': [] }
+        { 'name': 'CPU%', 'type': 'line', 'values': [] },
+        { 'name': 'RAM%', 'type': 'line', 'values': [] },
+        { 'name': 'NET RX (Mbps)', 'type': 'line', 'values': [] },
+        { 'name': 'NET TX (Mbps)', 'type': 'line', 'values': [] },
     ],
     'labels': []
 }
+
+def get_network_usage():
+    """
+    Returns the network traffic in Mbps for the past second.
+    """
+    net_io_counters1 = psutil.net_io_counters()
+    time.sleep(1)
+    net_io_counters2 = psutil.net_io_counters()
+    
+    bytes_sent = net_io_counters2.bytes_sent - net_io_counters1.bytes_sent
+    bytes_recv = net_io_counters2.bytes_recv - net_io_counters1.bytes_recv
+    bits_sent = bytes_sent * 8
+    bits_recv = bytes_recv * 8
+    
+    mbps_sent = bits_sent / 1000000
+    mbps_recv = bits_recv / 1000000
+    
+    # Make sure that the values are a bit more than 0
+    if mbps_sent < 0.01: mbps_sent = 0.01
+    if mbps_recv < 0.01: mbps_recv = 0.01
+
+    # Format the values to 2 decimal places
+    mbps_sent = round(mbps_sent, 2)
+    mbps_recv = round(mbps_recv, 2)
+
+    return (mbps_sent, mbps_recv)
 
 def push_stats():
     global server_statistics_cache  
@@ -150,23 +176,25 @@ def push_stats():
     mem_used = int(psutil.virtual_memory()[3]/gb)
     mem_percent = int(mem_used/mem_total*100)
 
-    cpu = server_statistics_cache['datasets'][0]['data']
-    ram = server_statistics_cache['datasets'][1]['data']
-    io = server_statistics_cache['datasets'][2]['data']
-    net = server_statistics_cache['datasets'][3]['data']
+    cpu = server_statistics_cache['datasets'][0]['values']
+    ram = server_statistics_cache['datasets'][1]['values']
+    net_tx = server_statistics_cache['datasets'][2]['values']
+    net_rx = server_statistics_cache['datasets'][3]['values']
 
     cpu.append(psutil.cpu_percent())
     ram.append(mem_percent)
-    io.append(psutil.disk_io_counters()[2]/mb)
-    net.append(psutil.net_io_counters()[0]/mb)
+    
+    nu = get_network_usage()
+    net_tx.append(nu[0])
+    net_rx.append(nu[1])
 
     # -- Trim the data
     MAX_ENTRIES = 10
 
-    server_statistics_cache['datasets'][0]['data'] = cpu[-MAX_ENTRIES:]
-    server_statistics_cache['datasets'][1]['data'] = ram[-MAX_ENTRIES:]
-    server_statistics_cache['datasets'][2]['data'] = io[-MAX_ENTRIES:]
-    server_statistics_cache['datasets'][3]['data'] = net[-MAX_ENTRIES:]
+    server_statistics_cache['datasets'][0]['values'] = cpu[-MAX_ENTRIES:]
+    server_statistics_cache['datasets'][1]['values'] = ram[-MAX_ENTRIES:]
+    server_statistics_cache['datasets'][2]['values'] = net_tx[-MAX_ENTRIES:]
+    server_statistics_cache['datasets'][3]['values'] = net_rx[-MAX_ENTRIES:]
 
     # -- mm:ss
     lable = time.strftime('%H:%M:%S', time.gmtime(time.time()))

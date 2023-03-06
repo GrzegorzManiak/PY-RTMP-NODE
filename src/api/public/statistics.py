@@ -34,6 +34,9 @@ def statistic_nginx():
 @authenticated()
 def statistic_server():
     return Response(
-        json.dumps(server_statistics_cache),
+        json.dumps({
+            'data': server_statistics_cache,
+            'message': 'Success'
+        }),
         mimetype='application/json'
     )
