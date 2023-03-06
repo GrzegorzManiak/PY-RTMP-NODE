@@ -60,6 +60,9 @@ while True:
         server_name = announcement[1]['name']
         server_slug = announcement[1]['slug']
 
+        # -- OS Set the secret
+        os.environ['SERVER_SECRET'] = server_secret
+
         log('CORE', 'Announced to master server successfully', 'DEBUG')
         log(server_slug, f'We are Node: "{server_id}", Named: "{server_name}", runing in: "{server_mode}" mode', 'info')
         break

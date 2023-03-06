@@ -1,6 +1,7 @@
 from functools import wraps
 from flask import request, Response
 from env import SECRET
+import os
 
 """
     :name: destructure_multi_dict
@@ -40,7 +41,10 @@ def authenticated():
     def decorator(view_func):
         @wraps(view_func)
         def wrapper(*args, **kwargs):
-            if request.headers.get('Authorization') == SECRET:
+            if (
+                request.headers.get('Authorization') == SECRET or
+                request.headers.get('Authorization') == os.environ.get('SERVER_SECRET')
+            ):
                 return view_func(*args, **kwargs)
             else: return Response(
                 'Unauthorized',
