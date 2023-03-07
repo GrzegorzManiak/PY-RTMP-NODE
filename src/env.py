@@ -9,6 +9,10 @@ NGINX_CONF = os.path.abspath(os.getenv("NGINX_CONF"))
 NGINX_CONF_PARSED = os.path.abspath(os.getenv("NGINX_CONF_PARSED"))
 NGINX_HTTP_PORT = int(os.getenv("NGINX_HTTP_PORT"))
 
+MASTER_SERVER = os.getenv("MASTER_SERVER")
+CERT_ENDPOINT = os.getenv("CERT_ENDPOINT")
+SERVER_NAME = os.getenv("SERVER_NAME")
+
 SECRET = os.getenv("MASTER_KEY")
 HTTPS = os.getenv("HTTPS").lower() == 'true'
 

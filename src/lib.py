@@ -42,14 +42,14 @@ def authenticated():
         @wraps(view_func)
         def wrapper(*args, **kwargs):
             if (
+                request.headers.get('Authorization') is not None and
+                os.environ.get('SERVER_SECRET') is not None and
+
                 request.headers.get('Authorization') == SECRET or
-                request.headers.get('Authorization') == os.environ.get('SERVER_SECRET')
-            ):
-                return view_func(*args, **kwargs)
-            else: return Response(
-                'Unauthorized',
-                status=401,
-            )
+                request.headers.get('nodesecret') == os.environ.get('SERVER_SECRET')
+            ): return view_func(*args, **kwargs)
+
+            else: return Response('Unauthorized', status=401)
         return wrapper
     
     return decorator

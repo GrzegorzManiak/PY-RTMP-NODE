@@ -65,6 +65,8 @@ while True:
 
         log('CORE', 'Announced to master server successfully', 'DEBUG')
         log(server_slug, f'We are Node: "{server_id}", Named: "{server_name}", runing in: "{server_mode}" mode', 'info')
+        
+        # -- Break out of the loop
         break
 
 
